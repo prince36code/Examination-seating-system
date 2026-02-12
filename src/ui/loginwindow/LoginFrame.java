@@ -5,14 +5,14 @@ import javax.swing.*;
 public class LoginFrame  extends JFrame{
     
      public LoginFrame(){
-        setTitle("EXAM HALL ALLOCATION");
-        setSize(520,530);
+        setTitle("Login Page");
+        setSize(600,600);
         setLayout(null);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         
-        getContentPane().setBackground(new Color(190, 210, 255));
+        getContentPane().setBackground(Color.BLACK);
         setLayout(new GridBagLayout());
 
         add(new LoginPanel());
