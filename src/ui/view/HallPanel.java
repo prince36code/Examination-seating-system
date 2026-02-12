@@ -3,8 +3,11 @@ package src.ui.view;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-public class HallPanel extends JPanel{
-     private JTextField idField;
+import javax.swing.table.JTableHeader;
+
+public class HallPanel extends JPanel {
+
+    private JTextField idField;
     private JTextField nameField;
     private JTextField capacityField;
 
@@ -13,20 +16,22 @@ public class HallPanel extends JPanel{
 
     public HallPanel() {
 
-        setLayout(new BorderLayout(20, 20));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setLayout(new BorderLayout(25, 25));
+        setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        setBackground(new Color(15, 15, 20));
 
         add(createTitle(), BorderLayout.NORTH);
         add(createMainContent(), BorderLayout.CENTER);
     }
 
     // ===============================
-    // TITLE SECTION
+    // TITLE
     // ===============================
     private JLabel createTitle() {
 
         JLabel title = new JLabel("HALLS");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 30));
 
         return title;
     }
@@ -36,80 +41,97 @@ public class HallPanel extends JPanel{
     // ===============================
     private JPanel createMainContent() {
 
-        JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
+        JPanel main = new JPanel(new BorderLayout(25, 25));
+        main.setOpaque(false);
 
-        mainPanel.add(createFormPanel(), BorderLayout.NORTH);
-        mainPanel.add(createTablePanel(), BorderLayout.CENTER);
+        main.add(createFormContainer(), BorderLayout.NORTH);
+        main.add(createTableContainer(), BorderLayout.CENTER);
 
-        return mainPanel;
+        return main;
     }
 
     // ===============================
-    // FORM PANEL
+    // FORM CONTAINER (Glow + Rounded)
     // ===============================
+    private JPanel createFormContainer() {
+
+        JPanel container = createGlowPanel(25);
+        container.setLayout(new BorderLayout());
+        container.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        container.add(createFormPanel(), BorderLayout.CENTER);
+
+        return container;
+    }
+
     private JPanel createFormPanel() {
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder("Add / Update Hall"));
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(12, 12, 12, 12);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        idField = new JTextField(15);
-        nameField = new JTextField(15);
-        capacityField = new JTextField(15);
+        idField = createStyledField();
+        nameField = createStyledField();
+        capacityField = createStyledField();
 
-        JButton addBtn = new JButton("Add");
-        JButton updateBtn = new JButton("Update");
-        JButton deleteBtn = new JButton("Delete");
+        JButton addBtn = createStyledButton("Add");
+        JButton updateBtn = createStyledButton("Update");
+        JButton deleteBtn = createStyledButton("Delete");
 
-        // Row 1 - Hall ID
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        formPanel.add(new JLabel("Hall ID:"), gbc);
-
-        gbc.gridx = 1;
-        formPanel.add(idField, gbc);
-
-        // Row 2 - Hall Name
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        formPanel.add(new JLabel("Hall Name:"), gbc);
+        // Hall ID
+        gbc.gridx = 0; gbc.gridy = 0;
+        form.add(createLabel("Hall ID:"), gbc);
 
         gbc.gridx = 1;
-        formPanel.add(nameField, gbc);
+        form.add(idField, gbc);
 
-        // Row 3 - Capacity
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        formPanel.add(new JLabel("Capacity:"), gbc);
+        // Hall Name
+        gbc.gridx = 0; gbc.gridy = 1;
+        form.add(createLabel("Hall Name:"), gbc);
 
         gbc.gridx = 1;
-        formPanel.add(capacityField, gbc);
+        form.add(nameField, gbc);
 
-        // Row 4 - Buttons
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        // Capacity
+        gbc.gridx = 0; gbc.gridy = 2;
+        form.add(createLabel("Capacity:"), gbc);
+
+        gbc.gridx = 1;
+        form.add(capacityField, gbc);
+
+        // Buttons
+        gbc.gridx = 0; gbc.gridy = 3;
         gbc.gridwidth = 2;
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addBtn);
-        buttonPanel.add(updateBtn);
-        buttonPanel.add(deleteBtn);
+        JPanel btnPanel = new JPanel();
+        btnPanel.setOpaque(false);
+        btnPanel.add(addBtn);
+        btnPanel.add(updateBtn);
+        btnPanel.add(deleteBtn);
 
-        formPanel.add(buttonPanel, gbc);
+        form.add(btnPanel, gbc);
 
-        return formPanel;
+        return form;
     }
 
     // ===============================
-    // TABLE PANEL
+    // TABLE CONTAINER (Glow + Rounded)
     // ===============================
-    private JPanel createTablePanel() {
+    private JPanel createTableContainer() {
 
-        JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.setBorder(BorderFactory.createTitledBorder("Hall List"));
+        JPanel container = createGlowPanel(30);
+        container.setLayout(new BorderLayout());
+        container.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        container.add(createTable(), BorderLayout.CENTER);
+
+        return container;
+    }
+
+    private JScrollPane createTable() {
 
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(new String[]{
@@ -119,13 +141,95 @@ public class HallPanel extends JPanel{
         });
 
         hallTable = new JTable(tableModel);
-        hallTable.setRowHeight(28);
-        hallTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        hallTable.setRowHeight(40);
+        hallTable.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        hallTable.setForeground(Color.WHITE);
+        hallTable.setBackground(new Color(22, 22, 30));
+        hallTable.setGridColor(Color.WHITE);
+        hallTable.setSelectionBackground(new Color(0, 150, 255));
+        hallTable.setSelectionForeground(Color.WHITE);
 
-        JScrollPane scrollPane = new JScrollPane(hallTable);
+        JTableHeader header = hallTable.getTableHeader();
+        header.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        header.setForeground(new Color(0, 220, 255));
+        header.setBackground(new Color(18, 18, 25));
+        header.setPreferredSize(new Dimension(header.getWidth(), 50));
 
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(hallTable);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(new Color(22, 22, 30));
 
-        return tablePanel;
+        return scroll;
+    }
+
+    // ===============================
+    // STYLED COMPONENTS
+    // ===============================
+    private JTextField createStyledField() {
+
+        JTextField field = new JTextField(15);
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        return field;
+    }
+
+    private JLabel createLabel(String text) {
+
+        JLabel label = new JLabel(text);
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        return label;
+    }
+
+    private JButton createStyledButton(String text) {
+
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(0, 140, 255));
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        return btn;
+    }
+
+    // ===============================
+    // GLOW PANEL GENERATOR
+    // ===============================
+    private JPanel createGlowPanel(int arc) {
+
+        return new JPanel() {
+
+            protected void paintComponent(Graphics g) {
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                for (int i = 8; i >= 2; i -= 2) {
+                    g2.setColor(new Color(0, 180, 255, 35));
+                    g2.setStroke(new BasicStroke(i));
+                    g2.drawRoundRect(
+                            i / 2,
+                            i / 2,
+                            getWidth() - i,
+                            getHeight() - i,
+                            arc,
+                            arc
+                    );
+                }
+
+                g2.setColor(new Color(22, 22, 30));
+                g2.fillRoundRect(
+                        6,
+                        6,
+                        getWidth() - 12,
+                        getHeight() - 12,
+                        arc,
+                        arc
+                );
+
+                g2.dispose();
+            }
+        };
     }
 }

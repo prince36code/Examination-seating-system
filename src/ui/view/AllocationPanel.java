@@ -3,16 +3,19 @@ package src.ui.view;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
 public class AllocationPanel extends JPanel {
-    
-     private JComboBox<String> examBox;
+
+    private JComboBox<String> examBox;
     private JTable allocationTable;
     private DefaultTableModel tableModel;
 
     public AllocationPanel() {
 
-        setLayout(new BorderLayout(20, 20));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setLayout(new BorderLayout(25, 25));
+        setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        setBackground(new Color(15, 15, 20));
 
         add(createTitle(), BorderLayout.NORTH);
         add(createMainContent(), BorderLayout.CENTER);
@@ -24,7 +27,8 @@ public class AllocationPanel extends JPanel {
     private JLabel createTitle() {
 
         JLabel title = new JLabel("ALLOCATION");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 30));
 
         return title;
     }
@@ -34,12 +38,13 @@ public class AllocationPanel extends JPanel {
     // ===============================
     private JPanel createMainContent() {
 
-        JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
+        JPanel main = new JPanel(new BorderLayout(25, 25));
+        main.setOpaque(false);
 
-        mainPanel.add(createControlPanel(), BorderLayout.NORTH);
-        mainPanel.add(createResultPanel(), BorderLayout.CENTER);
+        main.add(createControlPanel(), BorderLayout.NORTH);
+        main.add(createTableContainer(), BorderLayout.CENTER);
 
-        return mainPanel;
+        return main;
     }
 
     // ===============================
@@ -47,12 +52,13 @@ public class AllocationPanel extends JPanel {
     // ===============================
     private JPanel createControlPanel() {
 
-        JPanel controlPanel = new JPanel(new GridBagLayout());
-        controlPanel.setBorder(BorderFactory.createTitledBorder("Allocation Controls"));
+        JPanel control = new JPanel();
+        control.setOpaque(false);
+        control.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel label = new JLabel("Select Exam:");
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
         examBox = new JComboBox<>(new String[]{
                 "Exam 1 - Data Structures",
@@ -60,42 +66,82 @@ public class AllocationPanel extends JPanel {
                 "Exam 3 - Physics"
         });
 
+        examBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+
         JButton runBtn = new JButton("Run Allocation");
-        JButton clearBtn = new JButton("Clear Results");
+        JButton clearBtn = new JButton("Clear");
 
-        // Row 1 - Exam Dropdown
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        controlPanel.add(new JLabel("Select Exam:"), gbc);
+        styleButton(runBtn);
+        styleButton(clearBtn);
 
-        gbc.gridx = 1;
-        controlPanel.add(examBox, gbc);
-
-        // Row 2 - Buttons
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(runBtn);
-        buttonPanel.add(clearBtn);
-
-        controlPanel.add(buttonPanel, gbc);
-
-        // Button Actions (UI level only)
         runBtn.addActionListener(e -> runDummyAllocation());
-        clearBtn.addActionListener(e -> clearResults());
+        clearBtn.addActionListener(e -> tableModel.setRowCount(0));
 
-        return controlPanel;
+        control.add(label);
+        control.add(examBox);
+        control.add(runBtn);
+        control.add(clearBtn);
+
+        return control;
     }
 
     // ===============================
-    // RESULT PANEL
+    // TABLE CONTAINER (ROUNDED + GLOW)
     // ===============================
-    private JPanel createResultPanel() {
+    private JPanel createTableContainer() {
 
-        JPanel resultPanel = new JPanel(new BorderLayout());
-        resultPanel.setBorder(BorderFactory.createTitledBorder("Allocation Results"));
+        JPanel container = new JPanel() {
+
+            protected void paintComponent(Graphics g) {
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int arc = 30;
+
+                // Outer blue glow
+                for (int i = 8; i >= 2; i -= 2) {
+                    g2.setColor(new Color(0, 180, 255, 35));
+                    g2.setStroke(new BasicStroke(i));
+                    g2.drawRoundRect(
+                            i / 2,
+                            i / 2,
+                            getWidth() - i,
+                            getHeight() - i,
+                            arc,
+                            arc
+                    );
+                }
+
+                // Dark background
+                g2.setColor(new Color(22, 22, 30));
+                g2.fillRoundRect(
+                        6,
+                        6,
+                        getWidth() - 12,
+                        getHeight() - 12,
+                        arc,
+                        arc
+                );
+
+                g2.dispose();
+            }
+        };
+
+        container.setOpaque(false);
+        container.setLayout(new BorderLayout());
+        container.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        container.add(createTable(), BorderLayout.CENTER);
+
+        return container;
+    }
+
+    // ===============================
+    // TABLE DESIGN
+    // ===============================
+    private JScrollPane createTable() {
 
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(new String[]{
@@ -106,17 +152,44 @@ public class AllocationPanel extends JPanel {
         });
 
         allocationTable = new JTable(tableModel);
-        allocationTable.setRowHeight(28);
+        allocationTable.setRowHeight(42);
+        allocationTable.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        allocationTable.setForeground(Color.WHITE);
+        allocationTable.setBackground(new Color(22, 22, 30));
+        allocationTable.setGridColor(Color.WHITE);
+        allocationTable.setSelectionBackground(new Color(0, 150, 255));
+        allocationTable.setSelectionForeground(Color.WHITE);
+        allocationTable.setShowVerticalLines(true);
+        allocationTable.setShowHorizontalLines(true);
 
-        JScrollPane scrollPane = new JScrollPane(allocationTable);
+        JTableHeader header = allocationTable.getTableHeader();
+        header.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        header.setForeground(new Color(0, 220, 255));
+        header.setBackground(new Color(18, 18, 25));
+        header.setReorderingAllowed(false);
+        header.setPreferredSize(new Dimension(header.getWidth(), 50));
 
-        resultPanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(allocationTable);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(new Color(22, 22, 30));
 
-        return resultPanel;
+        return scroll;
     }
 
     // ===============================
-    // TEMPORARY DUMMY LOGIC (UI ONLY)
+    // BUTTON STYLE
+    // ===============================
+    private void styleButton(JButton btn) {
+
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(0, 140, 255));
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    // ===============================
+    // DUMMY DATA
     // ===============================
     private void runDummyAllocation() {
 
@@ -125,9 +198,5 @@ public class AllocationPanel extends JPanel {
         tableModel.addRow(new Object[]{"Hall A", "CSE101", 120, 150});
         tableModel.addRow(new Object[]{"Hall B", "MAT202", 80, 100});
         tableModel.addRow(new Object[]{"Hall C", "PHY303", 60, 80});
-    }
-
-    private void clearResults() {
-        tableModel.setRowCount(0);
     }
 }

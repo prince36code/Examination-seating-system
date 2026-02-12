@@ -1,113 +1,235 @@
 package src.ui.view;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 public class SubjectPanel extends JPanel {
+
     private JTextField codeField;
     private JTextField nameField;
     private JTextField creditsField;
+
     private JTable subjectTable;
     private DefaultTableModel tableModel;
 
     public SubjectPanel() {
 
-        setLayout(new BorderLayout(20, 20));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setLayout(new BorderLayout(25, 25));
+        setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        setBackground(new Color(15, 15, 20));
 
-        // ===============================
-        // TITLE
-        // ===============================
-        JLabel title = new JLabel("SUBJECTS");
-        title.setFont(new Font("Arial", Font.BOLD, 22));
-
-        add(title, BorderLayout.NORTH);
-
-        // ===============================
-        // CENTER PANEL
-        // ===============================
-        JPanel centerPanel = new JPanel(new BorderLayout(20, 20));
-
-        centerPanel.add(createFormPanel(), BorderLayout.NORTH);
-        centerPanel.add(createTablePanel(), BorderLayout.CENTER);
-
-        add(centerPanel, BorderLayout.CENTER);
+        add(createTitle(), BorderLayout.NORTH);
+        add(createMainContent(), BorderLayout.CENTER);
     }
 
-    // ===================================
-    // FORM PANEL
-    // ===================================
+    // ===============================
+    // TITLE
+    // ===============================
+    private JLabel createTitle() {
+
+        JLabel title = new JLabel("SUBJECTS");
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 30));
+
+        return title;
+    }
+
+    // ===============================
+    // MAIN CONTENT
+    // ===============================
+    private JPanel createMainContent() {
+
+        JPanel main = new JPanel(new BorderLayout(25, 25));
+        main.setOpaque(false);
+
+        main.add(createFormContainer(), BorderLayout.NORTH);
+        main.add(createTableContainer(), BorderLayout.CENTER);
+
+        return main;
+    }
+
+    // ===============================
+    // FORM CONTAINER (Glow + Rounded)
+    // ===============================
+    private JPanel createFormContainer() {
+
+        JPanel container = createGlowPanel(25);
+        container.setLayout(new BorderLayout());
+        container.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        container.add(createFormPanel(), BorderLayout.CENTER);
+
+        return container;
+    }
+
     private JPanel createFormPanel() {
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder("Add / Update Subject"));
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(12, 12, 12, 12);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        codeField = new JTextField(15);
-        nameField = new JTextField(15);
-        creditsField = new JTextField(15);
+        codeField = createStyledField();
+        nameField = createStyledField();
+        creditsField = createStyledField();
 
-        JButton addBtn = new JButton("Add");
-        JButton updateBtn = new JButton("Update");
-        JButton deleteBtn = new JButton("Delete");
+        JButton addBtn = createStyledButton("Add");
+        JButton updateBtn = createStyledButton("Update");
+        JButton deleteBtn = createStyledButton("Delete");
 
         // Code
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        formPanel.add(new JLabel("Code:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 0;
+        form.add(createLabel("Code:"), gbc);
 
         gbc.gridx = 1;
-        formPanel.add(codeField, gbc);
+        form.add(codeField, gbc);
 
         // Name
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        formPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 1;
+        form.add(createLabel("Name:"), gbc);
 
         gbc.gridx = 1;
-        formPanel.add(nameField, gbc);
+        form.add(nameField, gbc);
 
         // Credits
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        formPanel.add(new JLabel("Credits:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 2;
+        form.add(createLabel("Credits:"), gbc);
 
         gbc.gridx = 1;
-        formPanel.add(creditsField, gbc);
+        form.add(creditsField, gbc);
 
         // Buttons
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 3;
         gbc.gridwidth = 2;
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addBtn);
-        buttonPanel.add(updateBtn);
-        buttonPanel.add(deleteBtn);
+        JPanel btnPanel = new JPanel();
+        btnPanel.setOpaque(false);
+        btnPanel.add(addBtn);
+        btnPanel.add(updateBtn);
+        btnPanel.add(deleteBtn);
 
-        formPanel.add(buttonPanel, gbc);
+        form.add(btnPanel, gbc);
 
-        return formPanel;
+        return form;
     }
 
-    private JPanel createTablePanel() {
+    // ===============================
+    // TABLE CONTAINER (Glow + Rounded)
+    // ===============================
+    private JPanel createTableContainer() {
 
-        JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.setBorder(BorderFactory.createTitledBorder("Subject List"));
+        JPanel container = createGlowPanel(30);
+        container.setLayout(new BorderLayout());
+        container.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        container.add(createTable(), BorderLayout.CENTER);
+
+        return container;
+    }
+
+    private JScrollPane createTable() {
 
         tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(new String[]{"Code", "Name", "Credits"});
+        tableModel.setColumnIdentifiers(new String[]{
+                "Code",
+                "Name",
+                "Credits"
+        });
 
         subjectTable = new JTable(tableModel);
-        subjectTable.setRowHeight(25);
+        subjectTable.setRowHeight(40);
+        subjectTable.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        subjectTable.setForeground(Color.WHITE);
+        subjectTable.setBackground(new Color(22, 22, 30));
+        subjectTable.setGridColor(Color.WHITE);
+        subjectTable.setSelectionBackground(new Color(0, 150, 255));
+        subjectTable.setSelectionForeground(Color.WHITE);
 
-        JScrollPane scrollPane = new JScrollPane(subjectTable);
+        JTableHeader header = subjectTable.getTableHeader();
+        header.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        header.setForeground(new Color(0, 220, 255));
+        header.setBackground(new Color(18, 18, 25));
+        header.setPreferredSize(new Dimension(header.getWidth(), 50));
 
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(subjectTable);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(new Color(22, 22, 30));
 
-        return tablePanel;
+        return scroll;
+    }
+
+    // ===============================
+    // STYLED COMPONENTS
+    // ===============================
+    private JTextField createStyledField() {
+
+        JTextField field = new JTextField(15);
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        return field;
+    }
+
+    private JLabel createLabel(String text) {
+
+        JLabel label = new JLabel(text);
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        return label;
+    }
+
+    private JButton createStyledButton(String text) {
+
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(0, 140, 255));
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        return btn;
+    }
+
+    // ===============================
+    // GLOW PANEL GENERATOR
+    // ===============================
+    private JPanel createGlowPanel(int arc) {
+
+        return new JPanel() {
+
+            protected void paintComponent(Graphics g) {
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                for (int i = 8; i >= 2; i -= 2) {
+                    g2.setColor(new Color(0, 180, 255, 35));
+                    g2.setStroke(new BasicStroke(i));
+                    g2.drawRoundRect(
+                            i / 2,
+                            i / 2,
+                            getWidth() - i,
+                            getHeight() - i,
+                            arc,
+                            arc
+                    );
+                }
+
+                g2.setColor(new Color(22, 22, 30));
+                g2.fillRoundRect(
+                        6,
+                        6,
+                        getWidth() - 12,
+                        getHeight() - 12,
+                        arc,
+                        arc
+                );
+
+                g2.dispose();
+            }
+        };
     }
 }
