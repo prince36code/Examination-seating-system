@@ -2,29 +2,41 @@ package src.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import src.model.hall.*;
+import src.exceptions.*;
+import src.model.examhall.*;
+
 
 public class hallService {
 
-    private final  List<Hall> halls;
-
+    private final  List<ExamHall> ExamHalls;
    public hallService(){
-    halls = new ArrayList<>();
+    ExamHalls = new ArrayList<>();
    }
-
     
-   public void addExamHalls(Hall hall){
-       halls.add(hall);
+   public void addExamHalls(ExamHall hall){
+      ExamHalls.add(hall);
    }
 
-   public List<Hall> getExamHalls(){
-    return halls;
+   public List<ExamHall> getExamHalls(){
+    return ExamHalls;
    }
 
-   public void printAllExamHalls(){
-      for(Hall h:halls){
-        System.out.println(h.getHallName()+"-"+h.getHallID()+"-"+h.gethallCapacity());
+  public ExamHall getExamHallByID(String ID){
+       
+    for(ExamHall examhall: ExamHalls){
+      if(examhall.getHallID().equals(ID)){
+        return examhall;
       }
-   }
+    }
+    throw new ExamHallNotFoundExecption("Exam Hall with ID "+ID+" is not  found");
+     
+  }
+
+  public void removeExamHallbyID(String ID){
+
+    ExamHall examhall = getExamHallByID(ID);
+    ExamHalls.remove(examhall);
+    
+  }
 
 }

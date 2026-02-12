@@ -1,18 +1,19 @@
 package src.model.student;
 
-public class student {
+public class Student {
     private String studentName;
-    private String studentID;
+    private String studentRollNumber;
     private String studentBranch;
+    private String studentSection;
     private  int attandance;
   
 
-    public student(String Name,String ID ,String Branch, int attandance ){
+    public Student(String Name,String ID ,String Branch, int attandance, String studentSection){
         this.studentName = Name;
-        this.studentID = ID;
+        this.studentRollNumber = ID;
         this.studentBranch = Branch;
         this.attandance = attandance;
-       
+        this.studentSection = studentSection;       
     }
 
     public String getStudentName(){
@@ -20,7 +21,7 @@ public class student {
     }
 
     public String getStudentID(){
-        return studentID;
+        return studentRollNumber;
     }
 
     public String getStudentBranch(){
