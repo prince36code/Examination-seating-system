@@ -1,5 +1,4 @@
 package src.model.examhall;
-
 public class ExamHall {
      private String hallName;
      private String hallID;
